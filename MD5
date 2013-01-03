@@ -1,0 +1,15 @@
+ccd663054131f1651b04d3fc5166ba11 *DESCRIPTION
+df390c53434517b304ac5db487184641 *NAMESPACE
+d48ab64804ddf135feb84dfdc66151bd *R/ar.bugs.R
+8014cd6b01c50f8109b468c023444ce2 *R/inits.R
+d6bdb88dc912b497e64f029d9d6135b1 *R/nodes.R
+b326a30223a2095bdb07e1545c993bca *R/print.tsbugs.R
+bb53947f7db9ebe86ccc4cfdcd3b250c *R/rv.bugs.R
+6cd16673bf8a32e86cff1c3593106748 *R/sv.bugs.R
+18e6b48ed85018c229f3f1c7da84ede7 *man/ar.bugs.Rd
+4c91ab11e12854a611d30786f806b6bb *man/inits.Rd
+991407ab4c1ded7de7052253cc23fd0e *man/nodes.Rd
+40e21a7806f4466f69203cbd0c0d8df7 *man/print.tsbugs.Rd
+2f15b8fd7f64f945d36e5c0a2fb4c91f *man/rv.bugs.Rd
+1a0fec67137b15f30bb0f11932cd37b6 *man/sv.bugs.Rd
+c8eb8b976888187dd5886df2a2158159 *man/tsbugs-package.Rd
