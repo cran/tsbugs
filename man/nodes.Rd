@@ -35,8 +35,8 @@ Guy J. Abel
 }
 \examples{
 # Create AR(1) model for Lake Huron data
-lh <- LakeHuron
-ar1 <- ar.bugs(y = diff(lh), ar.order = 1)
+LH <- LakeHuron
+ar1 <- ar.bugs(y = diff(LH), ar.order = 1)
 
 # All nodes in model
 nodes(ar1)

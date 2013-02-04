@@ -32,8 +32,8 @@ Guy J. Abel
 }
 \examples{
 # Create AR(4) model for Lake Huron data
-lh <- LakeHuron
-ar4 <- ar.bugs(y = diff(lh), ar.order = 4)
+LH <- LakeHuron
+ar4 <- ar.bugs(y = diff(LH), ar.order = 4)
 
 # Candidate initial values
 inits(ar4) 

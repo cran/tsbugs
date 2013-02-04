@@ -78,8 +78,7 @@ Guy J. Abel
 \code{\link{ar.bugs}}, \code{\link{rv.bugs}}
 }
 \examples{
-# Create AR(0)-SV model for svpdx in the fanplot library
-library("fanplot")
+# Create AR(0)-SV model for svpdx
 y <- svpdx$pdx
 plot(y, type = "l")
 sv0 <- sv.bugs(y)
@@ -109,10 +108,12 @@ print(sv0)
   				  n.iter = 20000, n.burnin = 10000, n.chains = 1)
   
   # Plot the parameters posteriors and traces
+  library("coda")
   param.mcmc <- as.mcmc(sv0.bug$sims.matrix[, nodes(sv0, "prior")$name])
   plot(param.mcmc)
   
   # Plot posterior simulations using fanplot
+  library("fanplot")
   y.mcmc <- sv0.bug$sims.list$y.sim
   y.pn <- pn(y.mcmc, st = 1)
   plot(y, type = "n")

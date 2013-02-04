@@ -19,7 +19,7 @@ function(bug, warn.mess=TRUE){
   if(length(grep("delta",names(in1)))>0)  in1[[grep("delta",names(in1))]]<-c(rep(NA,in0[grep("delta",names(in1)),"beg"]),
                                                                              rep(0,in0[grep("delta",names(in1)),"end"]-in0[grep("delta",names(in1)),"beg"]))
   if(length(grep("beta",names(in1)))>0)  in1[[grep("beta",names(in1))]]<-c(rep(NA,in0[grep("beta",names(in1)),"beg"]),
-                                                                             rep(1,in0[grep("beta",names(in1)),"end"]-in0[grep("beta",names(in1)),"beg"]))
+                                                                             rep(0,in0[grep("beta",names(in1)),"end"]-in0[grep("beta",names(in1)),"beg"]))
   if(warn.mess==TRUE) print("guess attempt at initial values, might need to alter")
   return(in1)
 }

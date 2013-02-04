@@ -12,7 +12,6 @@ rv.bugs(y, ar.order = 0, h = NULL, sim = FALSE, mean.centre = FALSE, st = ar.ord
 		rv.tol0.prior = "dgamma(0.000001,0.000001)", rv.eps.prior = "dbeta(1, 100)", 
 		rv.ilambda2.prior = "dgamma(0.01,0.01)")
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{y}{
 Data to be used for the BUGS model.
@@ -68,8 +67,7 @@ Guy J. Abel
 \code{\link{ar.bugs}}, \code{\link{sv.bugs}}
 }
 \examples{
-# Create AR(0)-SV model for population growth rate (from ew in the fanplot library)
-library("fanplot")
+# Create AR(0)-SV model for population growth rate
 y <- diff(log(ew))
 plot(y, type = "l")
 rv0 <- rv.bugs(y)
@@ -96,10 +94,12 @@ print(rv0)
   				 n.iter = 11000, n.burnin = 1000, n.chains = 1)
   
   # Plot the parameters posteriors and traces
+  library("coda")
   param.mcmc <- as.mcmc(rv0.bug$sims.matrix[, nodes(rv0, "prior")$name])
   plot(param.mcmc)
   
   # Plot posterior simulations using fanplot
+  library("fanplot")
   y.mcmc <- rv0.bug$sims.list$y.sim
   y.pn <- pn(y.mcmc, st = start(y)[1])
   plot(y, type = "n")

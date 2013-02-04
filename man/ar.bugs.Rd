@@ -66,16 +66,16 @@ Guy J. Abel
 \examples{
 # Create AR(1) model for Lake Huron data
 plot(LakeHuron)
-lh <- LakeHuron
-ar1 <- ar.bugs(y = diff(lh), ar.order = 1)
+LH <- LakeHuron
+ar1 <- ar.bugs(y = diff(LH), ar.order = 1)
 print(ar1)
 
 # AR(2) model with alternative prior
-ar2 <- ar.bugs(y = diff(lh), ar.order = 2, ar.prior = "dunif(-1,1)", var.prior = "dgamma(0.001,0.001)")
+ar2 <- ar.bugs(y = diff(LH), ar.order = 2, ar.prior = "dunif(-1,1)", var.prior = "dgamma(0.001,0.001)")
 print(ar2)
 
 # AR(3) model with forecast and posterior simulations
-ar3 <- ar.bugs(y = diff(lh), ar.order = 3, h = 10, sim = TRUE, mean.centre = TRUE)
+ar3 <- ar.bugs(y = diff(LH), ar.order = 3, h = 10, sim = TRUE, mean.centre = TRUE)
 print(ar3) 
 
 \dontrun{
@@ -90,15 +90,16 @@ ar3.bug <- bugs(data = ar3$data,
 				n.iter = 11000, n.burnin = 1000, n.chains = 1)
 
 # Plot the parameters posteriors and traces
+library("coda")
 param.mcmc <- as.mcmc(ar3.bug$sims.matrix[, nodes(ar3, "prior")$name])
 plot(param.mcmc)
 
 # Plot posterior simulations using fanplot
 library("fanplot")
 y.mcmc <- ar3.bug$sims.list$y.sim
-y.pn <- pn(y.mcmc, st = tsp(diff(lh))[1] + 1)
-plot(diff(lh), type = "n")
+y.pn <- pn(y.mcmc, st = tsp(diff(LH))[1] + 1)
+plot(diff(LH), type = "n")
 fan(y.pn)
-lines(diff(lh)) 
+lines(diff(LH)) 
 }
 }
