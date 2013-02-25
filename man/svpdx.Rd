@@ -22,7 +22,7 @@ Raw data on log returns.
 http://www.econ.vu.nl/koopman/sv/svpdx.dat
 }
 \references{
-Meyer, R. and J. Yu (2000). BUGS for a Bayesian analysis of stochastic volatility models. \emph{Econometrics Journal} 3 (2), 198--215.
+Meyer, R. and J. Yu (2002). BUGS for a Bayesian analysis of stochastic volatility models. \emph{Econometrics Journal} 3 (2), 198--215.
 }
 \examples{
 data(svpdx)

@@ -7,10 +7,11 @@ Create BUGS Script of a Random Variance Shift Model
 Create BUGS script of an Random Variance (RV) shift model similar to that of McCulloch and Tsay (1991). Options allow for the inclusion of a different lag orders for the mean term, forecasts, posterior simulations from the model and alternative specification of prior distributions on some parameters.
 }
 \usage{
-rv.bugs(y, ar.order = 0, h = NULL, sim = FALSE, mean.centre = FALSE, st = ar.order + 1, 
+rv.bugs(y, ar.order = 0, k = NULL, sim = FALSE, mean.centre = FALSE, beg = ar.order + 1, 
 		mean.prior = ar.prior, ar.prior = "dnorm(0,1)", 
 		rv.tol0.prior = "dgamma(0.000001,0.000001)", rv.eps.prior = "dbeta(1, 100)", 
-		rv.ilambda2.prior = "dgamma(0.01,0.01)")
+		rv.ilambda2.prior = "dgamma(0.01,0.01)",
+space = FALSE)
 }
 \arguments{
   \item{y}{
@@ -19,7 +20,7 @@ Data to be used for the BUGS model.
   \item{ar.order}{
 AR order of the mean process for BUGS model.
 }
-  \item{h}{
+  \item{k}{
 Length of forecast horizon to be included in the BUGS model.
 }
   \item{sim}{
@@ -28,8 +29,8 @@ Enable posterior simulations to be included in the BUGS model. Default is \code{
   \item{mean.centre}{
 Include a term to centre the data on its mean value. Default is \code{FALSE}.
 }
-  \item{st}{
-Starting value for which data are considered onwards (and including) in the likelihood of the BUGS model. Default is \code{ar.order+1} but if comparing models of different orders, users may wish to set all \code{st} to the same value.
+  \item{beg}{
+Starting value for which data are considered onwards (and including) in the likelihood of the BUGS model. Default is \code{ar.order+1} but if comparing models of different orders, users may wish to set all \code{beg} to the same value.
 }
   \item{mean.prior}{
 Prior for mean term (not used if mean.centre is not set to \code{TRUE}). The distribution should be stated in BUGS syntax. By default, the same prior as the autoregressive terms are used.
@@ -46,15 +47,18 @@ Prior distribution for the epsilon term (the probability of the variance shift).
   \item{rv.ilambda2.prior}{
 Prior for the inverse of the squared lambda term of a variance shift model. The lambda represents the magnitude (on the log scale) of average variance shifts, thus \code{ilambda2} in a BUGS model is a similar to a tolerance on the shifts in the variance, and hence must be positive. By default this is set to a gamma distribution (\code{dgamma(0.01,0.01)}).
 }
+  \item{space}{
+Include some additional empty lines to seperate the likelihood, priors, forcasts and simulation components of the BUGS model.
+}
 }
 \details{
 This function create BUGS scripts of an random variance shift model adapted from McCulloch and Tsay (1991). Prior distributions for the tolerance of the initial data point, the probability of the variance shift, and the magnitude of average variance shifts can be specified. by users to differ from their default values. User specified prior distributions should be set up using BUGS syntax. For example, \code{dnorm} is a normal distribution with mean and tolerance (not variance) arguments.
 
-The data \code{y}, can contain missing values. Note, if missing values are close the beginning of the series when a high order model for the mean process is specified (i.e. the second data point is missing and a AR(4) is specified) the user with have to set a high starting point for model to be fitted on (\code{st}) for the BUGS model to function (i.e. 7).
+The data \code{y}, can contain missing values. Note, if missing values are close the beginning of the series when a high order model for the mean process is specified (i.e. the second data point is missing and a AR(4) is specified) the user with have to set a high starting point for model to be fitted on (\code{beg}) for the BUGS model to function (i.e. 7).
 }
 \value{
 \item{bug }{A BUGS model of type \code{tsbugs}.}
-\item{data }{The data to be used with the model. This might extend the original data passed to the function with \code{h} unknown future values to be forecast.}
+\item{data }{The data to be used with the model. This might extend the original data passed to the function with \code{k} unknown future values to be forecast.}
 \item{info }{Additional information on the length of the data, variance type and line numbers of certain parts of the BUGS model.}
 }
 \references{
@@ -68,7 +72,8 @@ Guy J. Abel
 }
 \examples{
 # Create AR(0)-SV model for population growth rate
-y <- diff(log(ew))
+r <- ts(ew[2:167]/ew[1:166]-1, start=1841)
+y <- diff(r) 
 plot(y, type = "l")
 rv0 <- rv.bugs(y)
 print(rv0)

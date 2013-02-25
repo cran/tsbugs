@@ -7,9 +7,10 @@ Create BUGS Script of a Autoregressive (AR) Time Series Model
 Create BUGS script of an time series model, where the data is assumed to be normally distributed. Options allow for the inclusion of a different lag orders for the mean term, forecasts, posterior simulations from the model and alternative specification of prior distributions on each parameter.
 }
 \usage{
-ar.bugs(y, ar.order = 1, h = NULL, sim = FALSE, mean.centre = FALSE, st = ar.order + 1, 
+ar.bugs(y, ar.order = 1, k = NULL, sim = FALSE, mean.centre = FALSE, beg = ar.order + 1, 
 	mean.prior = ar.prior, ar.prior = "dnorm(0,1)", 
-	tol.prior = "dgamma(0.000001,0.000001)", var.prior = NULL, sd.prior = NULL)
+	tol.prior = "dgamma(0.000001,0.000001)", var.prior = NULL, sd.prior = NULL, 
+space = FALSE)
 }
 \arguments{
   \item{y}{
@@ -18,7 +19,7 @@ Data to be used for the BUGS model.
   \item{ar.order}{
 AR order of the mean process for BUGS model.
 }
-  \item{h}{
+  \item{k}{
 Length of forecast horizon to be included in the BUGS model.
 }
   \item{sim}{
@@ -27,8 +28,8 @@ Enable posterior simulations to be included in the BUGS model. Default is \code{
   \item{mean.centre}{
 Include a term to centre the data on its mean value.Default is \code{FALSE}.
 }
-  \item{st}{
-Starting value for which data are considered onwards (and including) in the likelihood of the BUGS model. Default is \code{ar.order+1} but if comparing models of different orders, users may wish to set all \code{st} to the same value.
+  \item{beg}{
+Starting value for which data are considered onwards (and including) in the likelihood of the BUGS model. Default is \code{ar.order+1} but if comparing models of different orders, users may wish to set all \code{beg} to the same value.
 }
   \item{mean.prior}{
 Prior for mean term (not used if mean.centre is not set to \code{TRUE}). The distribution should be stated in BUGS syntax. By default, the same prior as the autoregressive terms is used.
@@ -45,16 +46,19 @@ Prior for the variance of the model. This must be a distribution of syntax recog
   \item{sd.prior}{
 Prior for the standard deviation of the model. This must be a distribution of syntax recognisable to BUGS. This is not set by default (where a gamma distribution for the tolerance is used).
 }
+  \item{space}{
+Include some additional empty lines to seperate the likelihood, priors, forcasts and simulation components of the BUGS model.
+}
 }
 \details{
 This function creates BUGS scripts of an AR time series model. Prior distributions should be set up using BUGS syntax. For example, \code{dnorm(.,.)} is a normal distribution with mean and tolerance (not variance) arguments. Only one argument of the \code{tol.prior}, \code{var.prior} or \code{sd.prior} should be set. Also, any new prior for either of these parameters should be based on distributions that provide only positive values, otherwise the BUGS model is likely to fail.
 
-The data, \code{y}, can contain missing values. Note, if missing values are close the beginning of the series when a high order model specified (i.e. the second data point is missing and a AR(4) is specified) the user with have to set a high starting point for model to be fitted on (\code{st}) for the BUGS model to function (i.e. 7).
+The data, \code{y}, can contain missing values. Note, if missing values are close the beginning of the series when a high order model specified (i.e. the second data point is missing and a AR(4) is specified) the user with have to set a high starting point for model to be fitted on (\code{beg}) for the BUGS model to function (i.e. 7).
 
 }
 \value{
 \item{bug }{A BUGS model of type \code{tsbugs}.}
-\item{data }{The data to be used with the model. This might extend the original data passed to the function with \code{h} unknown future values to be forecast.}
+\item{data }{The data to be used with the model. This might extend the original data passed to the function with \code{k} unknown future values to be forecast.}
 \item{info }{Additional information on the length of the data, variance type and line numbers of certain parts of the BUGS model.}
 }
 \author{
@@ -75,7 +79,7 @@ ar2 <- ar.bugs(y = diff(LH), ar.order = 2, ar.prior = "dunif(-1,1)", var.prior =
 print(ar2)
 
 # AR(3) model with forecast and posterior simulations
-ar3 <- ar.bugs(y = diff(LH), ar.order = 3, h = 10, sim = TRUE, mean.centre = TRUE)
+ar3 <- ar.bugs(y = diff(LH), ar.order = 3, k = 10, sim = TRUE, mean.centre = TRUE)
 print(ar3) 
 
 \dontrun{

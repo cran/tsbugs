@@ -1,30 +1,34 @@
 rv.bugs <-
-function(y, ar.order=0, h=NULL, sim=FALSE, 
-                  mean.centre=FALSE, st=ar.order+1,
-                  mean.prior=ar.prior, ar.prior="dnorm(0,1)",
-                  rv.tol0.prior="dgamma(0.000001,0.000001)", rv.eps.prior="dbeta(1, 100)", rv.ilambda2.prior="dgamma(0.01,0.01)"){
+function(y, ar.order=0, k=NULL, sim=FALSE, 
+                  mean.centre=FALSE, beg=ar.order+1,
+                  mean.prior=ar.prior, 
+                  ar.prior="dnorm(0,1)",
+                  rv.tol0.prior="dgamma(0.000001,0.000001)", 
+                  rv.eps.prior="dbeta(1, 100)", 
+                  rv.ilambda2.prior="dgamma(0.01,0.01)",
+                  space=FALSE){
   y<-c(y)
   n<-length(y)
-  if(!is.null(h)){
-    y<-c(y,rep(NA,h))
+  if(!is.null(k)){
+    y<-c(y,rep(NA,k))
   }
-  h<-length(y)-max(which(!is.na(y)))
-  if(st<ar.order)
-    stop("The value of st must be at least 1 greater than the number of lags")
+  k<-length(y)-max(which(!is.na(y)))
+  if(beg<ar.order)
+    stop("The value of beg must be at least 1 greater than the number of lags")
   
   bug<-c("model{","")
   #likelihood
   lik<-c("#likelihood",
-         paste0("for(t in ",st,":",n+h,"){"),
+         paste0("for(t in ",beg,":",n+k,"){"),
          "\ty[t] ~ dnorm(y.mean[t], isigma2[t])",
-         "\tisigma2[t] <- exp(-2*lsig[t])",
+         "\tisigma2[t] <- exp(-h[t])",
          "\th[t] <- 2*lsig[t]",
          "}")
   bug<-c(bug, lik)
   
   #ymean
   ymean<-c("#mean",
-           paste0("for(t in ",st,":",n+h,"){"),
+           paste0("for(t in ",beg,":",n+k,"){"),
            y.mean<-c("\ty.mean[t] <- 0",
                      "}")
   )
@@ -35,8 +39,8 @@ function(y, ar.order=0, h=NULL, sim=FALSE,
   
   #rv
   rv<-c("#variance",
-        paste0("lsig[",st,"] <- -0.5*log(isig02)"),
-        paste0("for(t in ",st+1,":",n+h,"){"),
+        paste0("lsig[",beg,"] <- -0.5*log(isig02)"),
+        paste0("for(t in ",beg+1,":",n+k,"){"),
         "\tlsig[t] <- lsig[t-1]+(delta[t]*beta[t])",
         "\tdelta[t] ~ dbern(epsilon)",
         "\tbeta[t] ~ dnorm(0,ilambda2)",
@@ -57,19 +61,19 @@ function(y, ar.order=0, h=NULL, sim=FALSE,
   
   #forecast
   forc<-NULL
-  if(h!=0){
-    forc<-c("#forecasts",
-            paste("for(t in ",n+1,":",n+h,"){",sep=""),
+  if(k!=0){
+    forc<-c("#forecast",
+            paste("for(t in ",n+1,":",n+k,"){",sep=""),
             "\ty.new[t] <- y[t]",
             "}",
             "")
     bug<-c(bug,forc)
   }
   
-  #simulations
+  #simulation
   if(sim==TRUE){
-    ysim<-c("#simulations",
-            paste("for(t in ",st,":",n,"){",sep=""),
+    ysim<-c("#simulation",
+            paste("for(t in ",beg,":",n,"){",sep=""),
             "\ty.mean.c[t] <- cut(y.mean[t])",
             "\tisigma2.c[t] <- cut(isigma2[t])",
             "\ty.sim[t] ~ dnorm(y.mean.c[t],isigma2.c[t])",
@@ -79,33 +83,41 @@ function(y, ar.order=0, h=NULL, sim=FALSE,
   }
   bug<-c(bug,"}","")
   
-  p1<-grep("likelihood",bug)
-  p2<-grep("prior",bug)
-  if(h!=0 & sim==TRUE){
-    p3<-grep("forecast",bug); p4<-grep("simulation",bug)
+  if(space==FALSE){
+    bug<-bug[-nchar(bug)!=0]
+    if(length(grep("#mean", bug))>0)
+      bug<-bug[-grep("#mean", bug)]
+    if(length(grep("#variance", bug))>0)
+      bug<-bug[-grep("#variance", bug)]
   }
-  if(h!=0 & sim==FALSE){
-    p3<-grep("forecast",bug); p4<-length(bug)
+  
+  p1<-grep("#likelihood",bug)
+  p2<-grep("#prior",bug)
+  if(k!=0 & sim==TRUE){
+    p3<-grep("#forecast",bug); p4<-grep("#simulation",bug)
   }
-  if(h==0 & sim==TRUE){
-    p3<-grep("simulation",bug); p4<-p3
+  if(k!=0 & sim==FALSE){
+    p3<-grep("#forecast",bug); p4<-length(bug)
+  }
+  if(k==0 & sim==TRUE){
+    p3<-grep("#simulation",bug); p4<-p3
   } 
-  if(h==0 & sim==FALSE){
+  if(k==0 & sim==FALSE){
     p3<-length(bug); p4<-p3
   } 
   p5<-length(bug)
   
   bug<-list(bug=bug,
             data=list(y=y),
-            info=list(n=n,h=h,nh=n+h,st=st,
+            info=list(n=n,k=k,nh=n+k,beg=beg,
                       args=mget(names(formals()),sys.frame(sys.nframe()))[-1],
                       variance="RV",
                       likelihood=p1:(p2-1),
                       priors=p2:(p3-1),
-                      forecasts=NULL,
-                      simulations=NULL))
-  if(p3!=p4)  bug$info$forecasts<-p3:(p4-1)
-  if(p4!=p5)  bug$info$simulations<-p4:(p5-1)
+                      forecast=NULL,
+                      simulation=NULL))
+  if(p3!=p4)  bug$info$forecast<-p3:(p4-1)
+  if(p4!=p5)  bug$info$simulation<-p4:(p5-1)
   class(bug)<-"tsbugs"
   return(bug)
   class(bug)<-"tsbugs"

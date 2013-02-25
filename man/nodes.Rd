@@ -14,7 +14,7 @@ nodes(bug, part = NULL)
 A time series BUGS model created using the \code{tsbugs} package.
 }
   \item{part}{
-A part of the \code{tsbugs} models. Must be one of \code{"likelihood"}, \code{"priors"}, \code{"forecasts" }or \code{"simulations"}. Abbreviations of these parts are allowed (\code{pmatch} is used for the matching).
+A part of the \code{tsbugs} models. Must be one of \code{"likelihood"}, \code{"priors"}, \code{"forecast"} or \code{"simulation"}. Abbreviations of these parts are allowed (\code{pmatch} is used for the matching).
 }
 }
 \details{
@@ -24,11 +24,14 @@ Provides a summary of nodes in all of, or part of, the  \code{tsbugs} BUGS model
 A \code{data.frame} with columns:
  \item{name }{Name of node.}
  \item{type }{Stochastic node represented by \code{~}. Deterministic node represented by \code{<-}.}
- \item{dist.trans }{Distribution or transformation in node.}
+ \item{dt }{Distribution or transformation in node.}
  \item{beg }{Beginning of node loop.}
  \item{end }{End of node loop.}
  \item{stoc }{Binary representation of type column, where 1 represents a stochastic node and 0 a deterministic node.}
  \item{id }{Line number of node in the BUGS model.}
+ \item{dist }{Distribution in node.}
+ \item{param1 }{First parameter of distribution.}
+ \item{param2 }{Second parameter of distribution.}
 }
 \author{
 Guy J. Abel

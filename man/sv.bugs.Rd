@@ -4,15 +4,16 @@
 Create BUGS Script of a Stochastic Volatility (SV) Model
 }
 \description{
-Create BUGS script of an SV time series model, similar those in Meyer and Yu (2000). Options allow for the inclusion of a different lag orders for the mean term, forecasts, posterior simulations from the model and alternative specification of prior distributions on each parameters.
+Create BUGS script of an SV time series model, similar those in Meyer and Yu (2002). Options allow for the inclusion of a different lag orders for the mean term, forecasts, posterior simulations from the model and alternative specification of prior distributions on each parameters.
 }
 \usage{
-sv.bugs(y, ar.order = 0, h = NULL, sim = FALSE, mean.centre = FALSE, st = ar.order + 1, 
+sv.bugs(y, ar.order = 0, k = NULL, sim = FALSE, mean.centre = FALSE, beg = ar.order + 1, 
 		mean.prior = ar.prior, ar.prior = "dnorm(0,1)", 
 		sv.order = 1, 
 		sv.mean.prior1 = "dnorm(0,0.001)", sv.mean.prior2 = NULL, 
 		sv.ar.prior1 = "dunif(0,1)", sv.ar.prior2 = NULL, 
-		sv.tol.prior = "dgamma(0.01,0.01)")
+		sv.tol.prior = "dgamma(0.01,0.01)",
+space = FALSE)
 }
 \arguments{
   \item{y}{
@@ -21,7 +22,7 @@ Data to be used for the BUGS model.
   \item{ar.order}{
 AR order of the mean process for BUGS model.
 }
-  \item{h}{
+  \item{k}{
 Length of forecast horizon to be included in the BUGS model.
 }
   \item{sim}{
@@ -30,8 +31,8 @@ Enable posterior simulations to be included in the BUGS model. Default is \code{
   \item{mean.centre}{
 Include a term to centre the data on its mean value. Default is \code{FALSE}.
 }
-  \item{st}{
-Starting value for which data are considered onwards (and including) in the likelihood of the BUGS model. By default this is the \code{ar.order+1} but if comparing models of different orders, users may wish to set all \code{st} to the same value.
+  \item{beg}{
+Starting value for which data are considered onwards (and including) in the likelihood of the BUGS model. By default this is the \code{ar.order+1} but if comparing models of different orders, users may wish to set all \code{beg} to the same value.
 }
   \item{mean.prior}{
 Prior for mean term (not used if mean.centre is not set to \code{TRUE}). The distribution should be stated in BUGS syntax. By default, the same prior as the autoregressive terms are used.
@@ -43,13 +44,13 @@ Prior for autoregressive terms. The distribution should be stated in BUGS syntax
 AR order of the volatility process for BUGS model.
 }
   \item{sv.mean.prior1}{
-Prior distribution for the mean volatility term. The distribution should be stated in BUGS syntax. By default set to a normal distribution with mean 0 and tolerance 0.001 (\code{dnorm(0,0.001)}), as in Meyer and Yu (2000).
+Prior distribution for the mean volatility term. The distribution should be stated in BUGS syntax. By default set to a normal distribution with mean 0 and tolerance 0.001 (\code{dnorm(0,0.001)}), as in Meyer and Yu (2002).
 }
   \item{sv.mean.prior2}{
 Alternative prior for mean volatility term. The distribution set here will be transformed by taking the negative logarithm. The distribution should be stated in BUGS syntax.
 }
   \item{sv.ar.prior1}{
-Prior for autoregressive terms of the volatility process. The distribution set here will be transformed by doubling and then subtracting 1 as in Meyer and Yu (2000). The distribution syntax must be recognisable to BUGS. By default set to a uniform distribution with bounds 0 and 1 (\code{dunif(0,1)}). 
+Prior for autoregressive terms of the volatility process. The distribution set here will be transformed by doubling and then subtracting 1 as in Meyer and Yu (2002). The distribution syntax must be recognisable to BUGS. By default set to a uniform distribution with bounds 0 and 1 (\code{dunif(0,1)}). 
 }
   \item{sv.ar.prior2}{
 Alternative prior for autoregressive terms of the volatility process. The distribution should be stated in BUGS syntax. 
@@ -57,15 +58,18 @@ Alternative prior for autoregressive terms of the volatility process. The distri
   \item{sv.tol.prior}{
 Prior for the tolerance of the volatility. The distribution should be stated in BUGS syntax. By default set to a uninformative gamma distribution.
 }
+  \item{space}{
+Include some additional empty lines to seperate the likelihood, priors, forcasts and simulation components of the BUGS model.
+}
 }
 \details{
-This function create BUGS scripts of an SV time series model, similar those in Meyer and Yu (2002). Prior distributions should be set up using BUGS syntax. For example, \code{dnorm} is a normal distribution with mean and tolerance (not variance) arguments. Prior distributions for the mean and autoregressive parameter in the volatility process can be specified directly in \code{sv.mean.prior1} and \code{sv.ar.prior1} respectively. In \code{sv.mean.prior2} the prior is given on the mean variance, and then transformed to the mean volatility. In \code{sv.ar.prior2} the prior is given on the positive scale as illustrated in Meyer and Yu (2000). Only one set of prior distributions are allowed (i.e. either \code{sv.ar.prior1} or \code{sv.ar.prior2} should specified by the user). 
+This function create BUGS scripts of an SV time series model, similar those in Meyer and Yu (2002). Prior distributions should be set up using BUGS syntax. For example, \code{dnorm} is a normal distribution with mean and tolerance (not variance) arguments. Prior distributions for the mean and autoregressive parameter in the volatility process can be specified directly in \code{sv.mean.prior1} and \code{sv.ar.prior1} respectively. In \code{sv.mean.prior2} the prior is given on the mean variance, and then transformed to the mean volatility. In \code{sv.ar.prior2} the prior is given on the positive scale as illustrated in Meyer and Yu (2002). Only one set of prior distributions are allowed (i.e. either \code{sv.ar.prior1} or \code{sv.ar.prior2} should specified by the user). 
 
-The data \code{y}, can contain missing values. Note, if missing values are close the beginning of the series when a high order model for the mean process is specified (i.e. the second data point is missing and a AR(4) is specified) the user with have to set a high starting point for model to be fitted on (\code{st}) for the BUGS model to function (i.e. 7).
+The data \code{y}, can contain missing values. Note, if missing values are close the beginning of the series when a high order model for the mean process is specified (i.e. the second data point is missing and a AR(4) is specified) the user with have to set a high starting point for model to be fitted on (\code{beg}) for the BUGS model to function (i.e. 7).
 }
 \value{
 \item{bug }{A BUGS model of type \code{tsbugs}.}
-\item{data }{The data to be used with the model. This might extend the original data passed to the function with \code{h} unknown future values to be forecast.}
+\item{data }{The data to be used with the model. This might extend the original data passed to the function with \code{k} unknown future values to be forecast.}
 \item{info }{Additional information on the length of the data, variance type and line numbers of certain parts of the BUGS model.}
 }
 \references{
@@ -93,7 +97,7 @@ sv0 <- sv.bugs(y, sv.ar.prior2 = "dunif(-1,1)")
 print(sv0)
 
 # AR(0)-SV model with forecast and posterior simulations
-sv0 <- sv.bugs(y, h = 10, sim = TRUE)
+sv0 <- sv.bugs(y, k = 10, sim = TRUE)
 print(sv0) 
 
 \dontrun{
