@@ -1,13 +1,13 @@
-64036e3474a7fb7771bac56772b85e4b *DESCRIPTION
-df390c53434517b304ac5db487184641 *NAMESPACE
+0baf9abddcfaf72d556c9ca181bf55b3 *DESCRIPTION
+2a3a65830fe4738bcb310a51b777d2df *NAMESPACE
 ebbad2e34e55ca4d96aa99733107112b *R/ar.bugs.R
 b0801e7dce7f0591f46227ae79949b8b *R/inits.R
 6806df15a2b7bc3825c407478a62ad28 *R/nodes.R
 b326a30223a2095bdb07e1545c993bca *R/print.tsbugs.R
 10267ce0ae74e93f338a46f07f520fc2 *R/rv.bugs.R
 659d491548bad9132e0a3400d1f1efc6 *R/sv.bugs.R
-f0eccd47fa2c6fa997970d17ffc855ac *data/ew.rda
-65053afdb792bb9444fbe27a4ed62147 *data/svpdx.rda
+d927a62f6c04d3aa4d5b0d1565eeef97 *data/ew.rda
+b3695d4b1f00c6ec58079a1806d40db1 *data/svpdx.rda
 7de10d38ccda20bcca1ab5f3c5967e30 *man/ar.bugs.Rd
 3d0dba8fea0b8b0fcc70289fc67ed341 *man/ew.Rd
 bdb5de2bba51d11d3aa470d21109eb22 *man/inits.Rd
